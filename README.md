@@ -7,16 +7,18 @@ My auction server contained 2 x 3.84TB ssd nvme disks and AMD Ryzen 9 5950X cpu 
 2. Boot the machine with CTRL+ALT+DEL (from Hetzner robot dashboard)
 3. Login to the machine and put it into nixos installer with kexec:
 ```sh
-localhost $ ssh root@<ip>
+# Replace this with your ipv4 or ipv6 address
+localhost $ export MY_SERVER_IP=x.y.z.w
+localhost $ ssh root@$MY_SERVER_IP
 root@<ip> $ curl -L https://gh-v6.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz | tar -xzf- -C /root
 root@<ip> $ /root/kexec/run
 ```
 4. Wait until the machine reboots and boots into nixos-installer
 5. Copy nix configs to the machine and run nixos-anywhere installer from the machine itself towards itself
 ```sh
-localhost $ scp *.nix "root@<ip>:/root/"
-localhost $ ssh -A root@<ip> 
-root@<ip> $ nix --extra-experimental-features "flakes nix-command" run github:nix-community/nixos-anywhere/b3b6bfebba35d55fba485ceda588984dec74c54f -- --debug --print-build-logs --flake .#myHost root@<ip>
+localhost $ scp *.nix "root@$MY_SERVER_IP:/root/"
+localhost $ ssh -A root@$MY_SERVER_IP
+root@<ip> $ nix --extra-experimental-features "flakes nix-command" run github:nix-community/nixos-anywhere/b3b6bfebba35d55fba485ceda588984dec74c54f -- --debug --print-build-logs --flake .#bellafonte root@::1
 ```
 
 ## LICENSE
