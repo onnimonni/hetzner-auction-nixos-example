@@ -1,0 +1,92 @@
+# Copied directly from https://github.com/nix-community/infra/blob/db5fdfe6821fbf6132c2652b9dc3d6507dbfc8dd/modules/nixos/disko-zfs.nix#L4
+# Only small modifications were needed, TODO: check if this could be srvos module too
+{ config, disko, ... }:
+{
+
+  # this is both efi and bios compatible
+  boot.loader.grub = {
+    enable = true;
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+  };
+
+  # the default zpool import services somehow times out while this import works fine?
+  boot.initrd.systemd.services.zfs-import-zroot.serviceConfig.ExecStartPre = "${config.boot.zfs.package}/bin/zpool import -N -f zroot";
+
+  # Sometimes fails after the first try, with duplicate pool name errors
+  boot.initrd.systemd.services.zfs-import-zroot.serviceConfig.Restart = "on-failure";
+
+  disko.devices = {
+    disk = {
+      nvme0n1 = {
+        type = "disk";
+        device = "/dev/nvme0n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            boot = {
+              size = "1M";
+              type = "EF02"; # for grub MBR
+            };
+            ESP = {
+              size = "1G";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+                mountOptions = [ "nofail" ];
+              };
+            };
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "zroot";
+              };
+            };
+          };
+        };
+      };
+      nvme1n1 = {
+        type = "disk";
+        device = "/dev/nvme1n1";
+        content = {
+          type = "gpt";
+          partitions = {
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "zroot";
+              };
+            };
+          };
+        };
+      };
+    };
+    zpool = {
+      zroot = {
+        type = "zpool";
+        options = {
+          ashift = "12";
+        };
+        rootFsOptions = {
+          acltype = "posixacl";
+          atime = "off";
+          compression = "lz4";
+          mountpoint = "none";
+          xattr = "sa";
+          "com.sun:auto-snapshot" = "false";
+        };
+        datasets = {
+          root = {
+            type = "zfs_fs";
+            mountpoint = "/";
+            options.mountpoint = "legacy";
+          };
+        };
+      };
+    };
+  };
+}
