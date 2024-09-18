@@ -3,6 +3,7 @@ I have Apple Silicon laptop and hence I wasn't able to use `--build-on-remote` f
 
 My auction server contained 2 x 3.84TB ssd nvme disks and AMD Ryzen 9 5950X cpu and Intel Corporation I210 Gigabit Network Connection (rev 03) network card
 
+## Installing NixOS for the first time
 1. Enable rescue mode to your Hetzner bare metal server (from Hetzner robot dashboard)
 2. Boot the machine with CTRL+ALT+DEL (from Hetzner robot dashboard)
 3. Login to the machine and put it into nixos installer with kexec:
@@ -30,7 +31,7 @@ error: a 'x86_64-linux' with features {} is required to build '/nix/store/8kqwgc
 To actually deploy new changes:
 ```sh
 export MY_SERVER_IP=x.y.z.w
-nix run nixpkgs#nixos-rebuild -- --fast --flake .#robot --target-host root@$MY_SERVER_IP --build-host root@$MY_SERVER_IP
+nix run nixpkgs#nixos-rebuild -- switch --fast --flake .#myHost --target-host root@$MY_SERVER_IP --build-host root@$MY_SERVER_IP
 ```
 
 ## Common issues
