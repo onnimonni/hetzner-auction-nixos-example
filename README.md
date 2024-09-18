@@ -21,5 +21,18 @@ localhost $ ssh -A root@$MY_SERVER_IP
 root@<server> $ nix --extra-experimental-features "flakes nix-command" run github:nix-community/nixos-anywhere/b3b6bfebba35d55fba485ceda588984dec74c54f -- --debug --print-build-logs --flake .#myHost root@::1
 ```
 
+## Deploy new changes from MacOS
+I learned that nixos-rebuild can be used to deploy new changes from the MacOS if one uses `--fast` flag. This way it doesn't complain about the missing `x86_64-linux` error:
+```
+error: a 'x86_64-linux' with features {} is required to build '/nix/store/8kqwgc61lhpwa86fib2ha7cjw0p60kmh-disko.drv', but I am a 'aarch64-darwin' with features {apple-virt, benchmark, big-parallel, nixos-test}
+```
+
+To actually deploy new changes:
+```sh
+export MY_SERVER_IP=x.y.z.w
+nix shell nixpkgs#nixos-rebuild
+nixos-rebuild switch --fast --flake .#robot --target-host root@$MY_SERVER_IP --build-host root@$MY_SERVER_IP
+```
+
 ## LICENSE
 MIT
