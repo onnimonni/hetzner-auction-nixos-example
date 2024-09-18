@@ -30,8 +30,13 @@ error: a 'x86_64-linux' with features {} is required to build '/nix/store/8kqwgc
 To actually deploy new changes:
 ```sh
 export MY_SERVER_IP=x.y.z.w
-nix shell nixpkgs#nixos-rebuild
-nixos-rebuild switch --fast --flake .#robot --target-host root@$MY_SERVER_IP --build-host root@$MY_SERVER_IP
+nix run nixpkgs#nixos-rebuild -- --fast --flake .#robot --target-host root@$MY_SERVER_IP --build-host root@$MY_SERVER_IP
+```
+
+## Common issues
+### New *.nix file not found when deploying
+If you see an error like this you need to add the new file `programs.nix` into git repository and then run `git add programs.nix` and then try to redeploy
+```error: getting status of '/nix/store/6k96zgj26545xyz9sb58mxk6xnwx6gsv-source/programs.nix': No such file or directory
 ```
 
 ## LICENSE
