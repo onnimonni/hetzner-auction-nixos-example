@@ -3,6 +3,8 @@ I have Apple Silicon laptop and hence I wasn't able to use `--build-on-remote` f
 
 My auction server contained 2 x 3.84TB ssd nvme disks and AMD Ryzen 9 5950X cpu and Intel Corporation I210 Gigabit Network Connection (rev 03) network card
 
+Before you get started I recommend you to learn [basics of Nix](https://learnxinyminutes.com/docs/nix/)
+
 ## Installing NixOS for the first time
 1. Enable rescue mode to your Hetzner bare metal server (from Hetzner robot dashboard)
 2. Boot the machine with CTRL+ALT+DEL (from Hetzner robot dashboard)
