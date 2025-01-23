@@ -18,4 +18,11 @@
   systemd.network.networks."10-uplink".networkConfig.Address = "XXXX:YYY:ZZZ:WWWW::2/64";
 
   system.stateVersion = "23.11";
+
+  # Enable monorepo packaged services
+  services.basic-go-web-app = {
+    enable = true;
+    port = 3000;
+  };
+  networking.firewall.allowedTCPPorts = [3000];
 }

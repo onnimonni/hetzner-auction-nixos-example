@@ -8,8 +8,11 @@
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+
+    # Sample service
+    basic-go-web-app.url = "path:./services/basic-go-web-app";  
   };
-  outputs = { self, nixpkgs, srvos, disko }: {
+  outputs = { self, nixpkgs, srvos, disko, basic-go-web-app }: {
     nixosConfigurations.myHost = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
@@ -23,6 +26,8 @@
         ./myHost.nix
         # Setup programs
         ./programs.nix
+        # Add the binaries and service and options for separate golang app
+        basic-go-web-app.nixosModules.default
       ];
     };
   };
